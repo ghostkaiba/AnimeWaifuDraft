@@ -33,28 +33,6 @@
       border-bottom: 2px solid #444;
     }
 
-    .number-display {
-      font-size: 20px;
-      font-weight: bold;
-      color: #fff;
-      margin-right: 10px;
-    }
-
-    .number-container button, .number-container input {
-      font-size: 13px;
-      padding: 5px 8px;
-      margin: 2px;
-      background-color: #555;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .number-container button:hover {
-      background-color: #777;
-    }
-
     .container {
       display: flex;
       justify-content: space-between;
@@ -71,27 +49,6 @@
       max-width: 600px;
       box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
     }
-
-    .role-container {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 6px;
-      text-align: left;
-      font-size: 12px;
-      padding: 5px;
-      background-color: #222;
-      border-radius: 5px;
-    }
-
-    input {
-      background-color: #444;
-      border: 1px solid #555;
-      color: white;
-      padding: 4px;
-      font-size: 12px;
-      width: 95%;
-      border-radius: 3px;
-    }
   </style>
 </head>
 <body>
@@ -100,11 +57,16 @@
   </div>
 
   <div class="number-container">
+    <input type="number" id="minValue" placeholder="Min value" min="1">
+    <input type="number" id="maxValue" placeholder="Max value" min="1">
+    <button onclick="setRange()">Set Range</button>
+  </div>
+  
+  <div class="number-container">
     <div class="number-display" id="numberDisplay">$top #?</div>
     <button onclick="generateNumber()">Generate</button>
     <button onclick="removeNumber()" id="removeButton" disabled>Remove</button>
-    <button onclick="addNumberBack()" id="addButton">Add Back</button>
-    <input type="number" id="addInput" placeholder="Enter number" min="1" max="20000">
+    <button onclick="addNumberBack()" id="addButton" disabled>Add Back</button>
   </div>
 
   <div class="container">
@@ -121,77 +83,106 @@
   </div>
 
   <script>
-    let pool = Array.from({ length: 20000 }, (_, i) => i + 1);
+    let pool = [];
     let currentNumber = null;
+    let removedNumber = null;
     let players = [];
     const maxPlayers = 10;
-    const roles = ["Captain", "Vice Captain", "Ace", "Flex 1", "Tank", "Wildcard", "Mascot", "Flex 2",
-                   "Wife/Husband", "Crazy Ex", "Mommy/Daddy", "Baby Mommy/Daddy", "Side Piece", "Other Side Piece", "Best Friend", "Brother/Sister"];
+    const roles = ["Captain", "Vice Captain", "Ace", "Flex 1", "Tank", "Wildcard", "Mascot", "Flex 2", "Wife/Husband", "Crazy Ex", "Mommy/Daddy", "Baby Mommy/Daddy", "Side Piece", "Other Side Piece", "Best Friend", "Brother/Sister"];
+
+    function setRange() {
+      const minValue = parseInt(document.getElementById("minValue").value) || 1;
+      const maxValue = parseInt(document.getElementById("maxValue").value) || 20000;
+
+      if (minValue >= maxValue) {
+        alert("Minimum value must be less than maximum value.");
+        return;
+      }
+
+      pool = Array.from({ length: maxValue - minValue + 1 }, (_, i) => i + minValue);
+      alert(`Range set: ${minValue} to ${maxValue}`);
+    }
 
     function generateNumber() {
-      if (pool.length === 0) return alert("No numbers left!");
+      if (pool.length === 0) return alert("No numbers left! Set a valid range first.");
       const randomIndex = Math.floor(Math.random() * pool.length);
       currentNumber = pool[randomIndex];
       document.getElementById("numberDisplay").textContent = `$top #${currentNumber}`;
       document.getElementById("removeButton").disabled = false;
     }
 
-    function addPlayer() {
-      if (players.length >= maxPlayers) return alert("Max players reached!");
-      players.push({ id: players.length + 1, name: `Player ${players.length + 1}`, roles: {} });
-      renderPlayers();
-    }
-
-    function removePlayer() {
-      if (players.length > 0) players.pop();
-      renderPlayers();
-    }
-
-    function updateRole(playerId, role, value) {
-      const player = players.find(p => p.id === playerId);
-      if (player) {
-        player.roles[role] = value;
+    function removeNumber() {
+      if (currentNumber !== null) {
+        pool = pool.filter(num => num !== currentNumber);
+        removedNumber = currentNumber;
+        currentNumber = null;
+        document.getElementById("numberDisplay").textContent = "$top #?";
+        document.getElementById("removeButton").disabled = true;
+        document.getElementById("addButton").disabled = false;
       }
-      renderSummaryBoard();
     }
 
-    function updatePlayerName(playerId, value) {
-      const player = players.find(p => p.id === playerId);
-      if (player) {
-        player.name = value;
+    function addNumberBack() {
+      if (removedNumber !== null) {
+        pool.push(removedNumber);
+        removedNumber = null;
+        document.getElementById("addButton").disabled = true;
       }
-      renderSummaryBoard();
     }
 
-    function renderPlayers() {
-      const board = document.getElementById("playerBoard");
-      board.innerHTML = "";
-      players.forEach(player => {
-        const div = document.createElement("div");
-        div.innerHTML = `<input type='text' value='${player.name}' oninput='updatePlayerName(${player.id}, this.value)'>`;
-        div.classList.add("role-container");
-        roles.forEach(role => {
-          div.innerHTML += `<div><strong>${role}:</strong> <input type='text' oninput='updateRole(${player.id}, "${role}", this.value)'></div>`;
-        });
-        board.appendChild(div);
+
+  function addPlayer() {
+    if (players.length >= maxPlayers) return alert("Max players reached!");
+    players.push({ id: players.length + 1, name: `Player ${players.length + 1}`, roles: {} });
+    renderPlayers();
+  }
+
+  function removePlayer() {
+    if (players.length > 0) players.pop();
+    renderPlayers();
+  }
+
+  function updateRole(playerId, role, value) {
+    const player = players.find(p => p.id === playerId);
+    if (player) player.roles[role] = value;
+    renderSummaryBoard();
+  }
+
+  function updatePlayerName(playerId, value) {
+    const player = players.find(p => p.id === playerId);
+    if (player) player.name = value;
+    renderSummaryBoard();
+  }
+
+  function renderPlayers() {
+    const board = document.getElementById("playerBoard");
+    board.innerHTML = "";
+    players.forEach(player => {
+      const div = document.createElement("div");
+      div.innerHTML = `<input type='text' value='${player.name}' oninput='updatePlayerName(${player.id}, this.value)'>`;
+      div.classList.add("role-container");
+      roles.forEach(role => {
+        div.innerHTML += `<div><strong>${role}:</strong> <input type='text' oninput='updateRole(${player.id}, "${role}", this.value)'></div>`;
       });
-      renderSummaryBoard();
-    }
+      board.appendChild(div);
+    });
+    renderSummaryBoard();
+  }
 
-    function renderSummaryBoard() {
-      const summaryBoard = document.getElementById("summaryBoard");
-      summaryBoard.innerHTML = "";
-      players.forEach(player => {
-        const div = document.createElement("div");
-        div.innerHTML = `<h3>${player.name} Summary</h3>`;
-        Object.entries(player.roles).forEach(([role, value]) => {
-          div.innerHTML += `<p><strong>${role}:</strong> ${value || "N/A"}</p>`;
-        });
-        summaryBoard.appendChild(div);
+  function renderSummaryBoard() {
+    const summaryBoard = document.getElementById("summaryBoard");
+    summaryBoard.innerHTML = "";
+    players.forEach(player => {
+      const div = document.createElement("div");
+      div.innerHTML = `<h3>${player.name} Summary</h3>`;
+      Object.entries(player.roles).forEach(([role, value]) => {
+        div.innerHTML += `<p><strong>${role}:</strong> ${value || "N/A"}</p>`;
       });
-    }
+      summaryBoard.appendChild(div);
+    });
+  }
 
 
-</script>
+  </script>
 </body>
 </html>
