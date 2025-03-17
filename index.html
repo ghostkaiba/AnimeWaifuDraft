@@ -4,295 +4,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anime Waifu Draft</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Roboto:wght@300&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #0d0d0d; /* Near black background */
-      color: #ccc; /* Softer gray for text */
-    }
-
-    .header {
-      background: linear-gradient(to right, #222222, #1a1a1a); /* Subtle gradient for a darker header */
-      color: #888; /* Muted header text */
-      padding: 10px;
-      text-align: center;
-      font-family: 'Poppins', sans-serif;
-      font-size: 22px;
-      font-weight: bold;
-      border-bottom: 2px solid #333;
-    }
-
-    .split-container {
-      display: grid;
-      grid-template-rows: auto 1fr; /* Top and bottom layout */
-      grid-template-columns: repeat(3, 1fr); /* Equal layout for bottom row */
-      gap: 15px;
-      padding: 10px;
-      height: calc(100vh - 60px);
-    }
-
-    .split-box {
-      background: #161616; /* Deep dark gray for boxes */
-      border-radius: 10px;
-      padding: 15px;
-      overflow-y: auto;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7); /* Soft shadow */
-      display: flex;
-      flex-direction: column;
-    }
-
-    .compact-box {
-      grid-column: span 3; /* Top section spans all */
-      height: 150px;
-    }
-
-    .equal-box {
-      height: 100%; /* Consistent box height */
-    }
-
-    h2 {
-      font-family: 'Poppins', sans-serif;
-      font-size: 16px;
-      text-align: center;
-      color: #bbb; /* Softer text color */
-      margin-bottom: 10px;
-      border-bottom: 1px solid #333;
-    }
-
-    input[type="number"], input[type="text"], button {
-      font-size: 12px;
-      padding: 8px;
-      border-radius: 5px;
-      border: 1px solid #444;
-      background-color: #222;
-      color: #aaa; /* Muted input text */
-      margin-bottom: 8px;
-      transition: transform 0.2s, background-color 0.3s ease;
-    }
-
-    button {
-      background-color: #333; /* Darker button */
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #444;
-      transform: scale(1.05);
-    }
-
-    .number-display {
-      font-size: 18px;
-      padding: 10px;
-      background-color: #1a1a1a; /* Slightly lighter than main background */
-      border: 1px solid #444;
-      border-radius: 5px;
-      text-align: center;
-      font-family: 'Poppins', sans-serif;
-      color: #ddd; /* Light text for visibility */
-    }
-
-    .player-card, .summary-card {
-      background: #1a1a1a; /* Same as number display for consistency */
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Slight depth */
-      transition: transform 0.2s;
-      color: #ccc;
-    }
-
-    .player-card:hover, .summary-card:hover {
-      transform: scale(1.02);
-    }
-
-    @media (max-width: 768px) {
-      .split-container {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto auto; /* Stacked layout */
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS -->
 </head>
 <body>
-  <div class="header">
-    Anime Waifu Draft
+  <header class="header">
+    <h1>Anime Waifu Draft</h1>
+  </header>
+
+  <!-- Random Number Generator Section -->
+  <section class="number-container">
+    <input type="number" id="minValue" placeholder="Min value" min="1" aria-label="Minimum Value">
+    <input type="number" id="maxValue" placeholder="Max value" min="1" aria-label="Maximum Value">
+    <button onclick="setRange()" aria-label="Set Range">Set Range</button>
+  </section>
+
+  <section class="number-container">
+    <div class="number-display" id="numberDisplay" aria-live="polite">$top #?</div>
+    <button onclick="generateNumber()" aria-label="Generate Number">Generate</button>
+    <button onclick="removeNumber()" id="removeButton" disabled aria-label="Remove Number">Remove</button>
+    <button onclick="addNumberBack()" id="addButton" disabled aria-label="Add Back Number">Add Back</button>
+  </section>
+
+  <!-- Main Content -->
+  <div class="container">
+  <!-- Player Draft Board Section -->
+  <div class="box">
+    <h2>Player Draft Board</h2>
+    <div id="playerBoard"></div>
+    <button onclick="addPlayer()">Add Player</button>
+    <button onclick="removePlayer()">Remove Player</button>
   </div>
 
-  <div class="split-container">
-    <!-- Random Number Generator -->
-    <div class="split-box compact-box">
-      <h2>Random Number Generator</h2>
-      <div>
-        <input type="number" id="minValue" placeholder="Min value" min="1">
-        <input type="number" id="maxValue" placeholder="Max value" min="1">
-        <button onclick="setRange()">Set Range</button>
-      </div>
-      <div>
-        <div class="number-display" id="numberDisplay">$top #?</div>
-        <button onclick="generateNumber()">Generate</button>
-        <button onclick="removeNumber()" id="removeButton" disabled>Remove</button>
-        <button onclick="addNumberBack()" id="addButton" disabled>Add Back</button>
-      </div>
-    </div>
-
-    <!-- Discord Widget -->
-    <div class="split-box equal-box">
-      <h2>Discord Chat</h2>
-      <widgetbot
-        server="580792540358377483"
-        channel="807840301392723998"
-        width="100%"
-        height="100%">
-      </widgetbot>
-      <script src="https://cdn.jsdelivr.net/npm/@widgetbot/html-embed"></script>
-    </div>
-
-    <!-- Player Draft Board -->
-    <div class="split-box equal-box">
-      <h2>Player Draft Board</h2>
-      <div id="playerBoard"></div>
-      <button onclick="addPlayer()">Add Player</button>
-      <button onclick="removePlayer()">Remove Player</button>
-    </div>
-
-    <!-- Draft Summary -->
-    <div class="split-box equal-box">
-      <h2>Draft Summary</h2>
-      <div id="summaryBoard"></div>
-    </div>
+  <!-- Discord Widget Section -->
+  <div class="box">
+    <h2>Discord Chat</h2>
+    <widgetbot
+      server="580792540358377483"
+      channel="807840301392723998"
+      width="100%"
+      height="400px">
+    </widgetbot>
+    <script src="https://cdn.jsdelivr.net/npm/@widgetbot/html-embed"></script>
   </div>
 
-  <script>
-    let pool = [];
-let currentNumber = null;
-let removedNumber = null;
-let players = [];
-const maxPlayers = 10;
-const roles = [
-  "Captain", "Vice Captain", "Ace", "Flex 1", "Tank",
-  "Wildcard", "Mascot", "Flex 2", "Wife/Husband", "Crazy Ex"
-];
+  <!-- Draft Summary Section -->
+  <div class="box">
+    <h2>Draft Summary</h2>
+    <div id="summaryBoard"></div>
+  </div>
+</div>
 
-// Random Number Generator Functionality
-function setRange() {
-  const minValue = parseInt(document.getElementById("minValue").value) || 1;
-  const maxValue = parseInt(document.getElementById("maxValue").value) || 20000;
+    </div>
+  </main>
 
-  if (minValue >= maxValue) {
-    alert("Minimum value must be less than maximum value.");
-    return;
-  }
-
-  pool = Array.from({ length: maxValue - minValue + 1 }, (_, i) => i + minValue);
-  alert(`Range set: ${minValue} to ${maxValue}`);
-}
-
-function generateNumber() {
-  if (pool.length === 0) return alert("No numbers left! Set a valid range first.");
-  const randomIndex = Math.floor(Math.random() * pool.length);
-  currentNumber = pool[randomIndex];
-  document.getElementById("numberDisplay").textContent = `$top #${currentNumber}`;
-  document.getElementById("removeButton").disabled = false;
-}
-
-function removeNumber() {
-  if (currentNumber !== null) {
-    pool = pool.filter(num => num !== currentNumber);
-    removedNumber = currentNumber;
-    currentNumber = null;
-    document.getElementById("numberDisplay").textContent = "$top #?";
-    document.getElementById("removeButton").disabled = true;
-    document.getElementById("addButton").disabled = false;
-  }
-}
-
-function addNumberBack() {
-  if (removedNumber !== null) {
-    pool.push(removedNumber);
-    removedNumber = null;
-    document.getElementById("addButton").disabled = true;
-  }
-}
-
-// Player Draft Board Functionality
-function addPlayer() {
-  if (players.length >= maxPlayers) return alert("Max players reached!");
-  players.push({ id: players.length + 1, name: `Player ${players.length + 1}`, roles: {} });
-  renderPlayers();
-}
-
-function removePlayer() {
-  if (players.length > 0) players.pop();
-  renderPlayers();
-}
-
-function updatePlayerName(playerId, value) {
-  const player = players.find(p => p.id === playerId);
-  if (player) player.name = value;
-  renderSummaryBoard();
-}
-
-function updateRole(playerId, role, value) {
-  const player = players.find(p => p.id === playerId);
-  if (player) player.roles[role] = value;
-  renderSummaryBoard();
-}
-
-// Render Functions
-function renderPlayers() {
-  const board = document.getElementById("playerBoard");
-  board.innerHTML = "";
-  players.forEach(player => {
-    const div = document.createElement("div");
-    div.style.marginBottom = "10px";
-
-    div.innerHTML = `
-      <input type='text' 
-             value='${player.name}' 
-             placeholder='Player Name' 
-             oninput='updatePlayerName(${player.id}, this.value)' 
-             style='margin-bottom: 5px; width: 100%;' />
-    `;
-
-    roles.forEach(role => {
-      const roleDiv = document.createElement("div");
-      roleDiv.innerHTML = `
-        <label style='width: 50%;'>${role}:</label>
-        <input type='text' 
-               placeholder='Assign Role' 
-               value='${player.roles[role] || ""}' 
-               oninput='updateRole(${player.id}, "${role}", this.value)' 
-               style='width: 45%;' />
-      `;
-      div.appendChild(roleDiv);
+  <!-- Discord Integration -->
+  <script src="https://cdn.jsdelivr.net/npm/@widgetbot/crate@3" async defer>
+    new Crate({
+      server: '580792540358377483',
+      channel: '807840301392723998'
     });
-
-    board.appendChild(div);
-  });
-  renderSummaryBoard();
-}
-
-function renderSummaryBoard() {
-  const summaryBoard = document.getElementById("summaryBoard");
-  summaryBoard.innerHTML = "";
-  players.forEach(player => {
-    const div = document.createElement("div");
-    div.style.marginBottom = "10px";
-    div.innerHTML = `<h3>${player.name} Summary</h3>`;
-
-    for (const [role, value] of Object.entries(player.roles)) {
-      const roleInfo = document.createElement("p");
-      roleInfo.textContent = `${role}: ${value || "N/A"}`;
-      div.appendChild(roleInfo);
-    }
-
-    summaryBoard.appendChild(div);
-  });
-}
-
   </script>
+  <script src="scripts.js" defer></script> <!-- Link to external JS -->
 </body>
 </html>
