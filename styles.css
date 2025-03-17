@@ -1,0 +1,107 @@
+:root {
+  --background-color: #181818;
+  --container-bg: #333;
+  --border-color: #444;
+  --text-color: #ddd;
+  --header-bg: #282828;
+  --highlight-color: #555;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  background-color: #0d0d0d; /* Deeper dark background */
+  color: #ccc; /* Softer text color for better readability */
+  font-size: 14px;
+}
+
+.header {
+  background: linear-gradient(to right, #1a1a1a, #333); /* Dark gradient */
+  color: white;
+  padding: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 2px solid #444; /* Subtle border for header separation */
+}
+
+.number-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #222; /* Slightly lighter background for contrast */
+  padding: 10px;
+  gap: 10px;
+  border-bottom: 1px solid #333; /* Defines section separation */
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px; /* Adds space between the sections */
+  padding: 10px;
+}
+
+ .box {
+  background-color: #333;
+  border: 1px solid #444;
+  border-radius: 5px;
+  padding: 15px;
+  width: 32%; /* Ensure all three sections align uniformly */
+  max-height: 450px; /* Increase the height slightly to utilize the empty space */
+  overflow-y: auto; /* Maintain internal scrolling for long content */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+}
+
+h2 {
+  font-size: 16px;
+  color: #ddd; /* Light heading color for emphasis */
+  margin-bottom: 10px;
+  border-bottom: 1px solid #444; /* Divider for headings */
+  padding-bottom: 5px;
+}
+
+input, button {
+  font-size: 14px;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background-color: #222;
+  color: #ccc; /* Matches overall text color */
+  transition: all 0.3s ease; /* Smooth transitions */
+}
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #333; /* Highlight effect on hover */
+  transform: scale(1.05); /* Slightly enlarges button for feedback */
+}
+
+.number-display {
+  font-size: 18px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #1a1a1a; /* Matches box theme */
+  color: #ddd; /* Pops against the dark background */
+  border: 1px solid #333;
+}
+
+.role-container {
+  margin-bottom: 10px; /* Adds spacing for roles */
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+ 
+}
+
+}
+
