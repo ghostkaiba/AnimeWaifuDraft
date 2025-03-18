@@ -5,8 +5,10 @@ let removedNumber = null;
 let players = [];
 const maxPlayers = 10;
 const roles = [
-  "Captain", "Vice Captain", "Ace", "Flex 1", "Tank", 
-  "Wildcard", "Mascot", "Flex 2", "Wife/Husband", "Crazy Ex"
+  "Captain", "Vice Captain", "Ace", "Flex 1/Tactician", "Tank", 
+  "Wildcard", "Mascot", "Flex 2/Support", "Wife/Husband", "Crazy Ex",
+  "Mommy/Daddy", "Baby Mommy/Baby Daddy", "Side Piece", "Other Side Piece", 
+  "Best Friend", "Brother/Sister"
 ];
 
 // Random Number Generator Functions
